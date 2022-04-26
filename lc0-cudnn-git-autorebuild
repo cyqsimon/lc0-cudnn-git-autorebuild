@@ -29,7 +29,7 @@ git submodule update --init --recursive
 # make sure we can compile as unprivileged user
 chown -R nobody:nobody .
 
-# build and install
+# clean, build, and install
 rm -rf build
 sudo --user=nobody --group=nobody PATH=$PATH:/opt/cuda/bin ./build.sh release -Dblas=false -Dopencl=false
 install -Dm755 build/release/lc0 /usr/bin/lc0
