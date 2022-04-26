@@ -1,0 +1,14 @@
+# Rebuild `lc0-cudnn-git` against the new version of `cudnn` when it updates
+
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = cudnn
+
+[Action]
+Description = Rebuilding lc0-cudnn using new version of cudnn...
+Exec = /usr/bin/lc0-cudnn-git-autorebuild
+When = PostTransaction
+Depends = git
+Depends = meson
+Depends = ninja

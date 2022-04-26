@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# /usr/bin/lc0-cudnn-git-autorebuild
+
+# this script is intended for use with pacman hooks
+# and should be run as privileged user
+
+set -e
+
+GIT_REMOTE="https://github.com/LeelaChessZero/lc0.git"
+REBUILD_DIR="/var/cache/lc0-cudnn-git-autorebuild"
+
+# clone if not present or empty
+if ! [[ -d "$REBUILD_DIR" ]] || [[ -z "$(ls -A "$REBUILD_DIR")" ]]; then
+  rm -rf "$REBUILD_DIR"
+  git clone "$GIT_REMOTE" "$REBUILD_DIR"
+fi
+
+cd "$REBUILD_DIR"
+
+# checkout currently-installed version and pull submodules
+LC0_CURRENT_VER_TAG="v$(pacman -Q lc0-cudnn-git | sed -E 's/.+ (([0-9]+\.){3}).*/\1/;s/\.$//')"
+echo "Currently installed version of lc0 is $LC0_CURRENT_VER_TAG. Rebuilding this version."
+git fetch
+git reset --hard
+git checkout "$LC0_CURRENT_VER_TAG"
+git submodule update --init --recursive
+
+# make sure we can compile as unprivileged user
+chown -R nobody:nobody .
+
+# build and install
+rm -rf build
+sudo --user=nobody --group=nobody PATH=$PATH:/opt/cuda/bin ./build.sh release -Dblas=false -Dopencl=false
+install -Dm755 build/release/lc0 /usr/bin/lc0
