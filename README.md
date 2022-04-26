@@ -9,4 +9,7 @@
 | `lc0-cudnn-git-autorebuild`      | `/usr/local/bin/`      | `/usr/bin/`                 |
 | `lc0-cudnn-git-autorebuild.hook` | `/etc/pacman.d/hooks/` | `/usr/share/libalpm/hooks/` |
 
-Note: `lc0-cudnn-git-autorebuild` should be installed with mode 744.
+### Note
+ - `lc0-cudnn-git-autorebuild` should be installed with mode 744.
+ - patch `lc0-cudnn-git-autorebuild.hook` when installing locally:
+   - `sed -i 's|/usr/bin|/usr/local/bin|' lc0-cudnn-git-autorebuild.hook`
